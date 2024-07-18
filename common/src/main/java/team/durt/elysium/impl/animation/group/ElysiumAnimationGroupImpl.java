@@ -72,8 +72,10 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
     @Override
     public void playAnimation(String animationName, boolean once, boolean force) {
         animationStates.get(animationName).play(force);
-        long duration = (long) (animations.get(animationName).lengthInSeconds() * 1000);
-        ElysiumSchedule.schedule(() -> animationStates.get(animationName).stop(), duration, TimeUnit.MILLISECONDS);
+        if (once) {
+            long duration = (long) (animations.get(animationName).lengthInSeconds() * 1000);
+            ElysiumSchedule.schedule(() -> animationStates.get(animationName).stop(), duration, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override

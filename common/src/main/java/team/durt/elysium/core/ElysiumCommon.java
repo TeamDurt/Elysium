@@ -11,11 +11,11 @@ public class ElysiumCommon {
     public static void init() {
         ElysiumAnimationGroup<Camel> idleAnimationGroup = new ElysiumAnimationGroupImpl.Builder<Camel>()
                 .define("idle", CamelAnimation.CAMEL_IDLE)
-                .addState("none", ImmutableList.of("idle"), ImmutableList.of(
-                        new ElysiumAnimationGroup.Transition<>("idle", zombie -> !zombie.hasImpulse, ImmutableList.of())
+                .addState("none", ImmutableList.of(), ImmutableList.of(
+                        new ElysiumAnimationGroup.Transition<>("idle", camel -> !camel.hasImpulse, ImmutableList.of())
                 ))
-                .addState("idle", ImmutableList.of(), ImmutableList.of(
-                        new ElysiumAnimationGroup.Transition<>("none", zombie -> zombie.hasImpulse, ImmutableList.of())
+                .addState("idle", ImmutableList.of("idle"), ImmutableList.of(
+                        new ElysiumAnimationGroup.Transition<>("none", camel -> camel.hasImpulse, ImmutableList.of())
                 ))
                 .defaultState("idle")
                 .build();
