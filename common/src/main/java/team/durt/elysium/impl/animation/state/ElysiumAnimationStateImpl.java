@@ -8,18 +8,11 @@ import team.durt.elysium.api.animation.state.ElysiumAnimationState;
  * Implementation of {@link ElysiumAnimationState} to manage animation states.
  */
 public class ElysiumAnimationStateImpl extends ElysiumAnimationState {
-    private boolean playing; // Tracks if the animation is currently playing.
-    private long animatedTime = Long.MAX_VALUE; // Stores the animated time in milliseconds.
-    private long lastUpdateTime = Long.MAX_VALUE; // Stores the last update time in milliseconds.
+    private boolean playing = false;
+    private long animatedTime = Long.MAX_VALUE;
+    private long lastUpdateTime = Long.MAX_VALUE;
 
-    /**
-     * Constructs a new {@code ElysiumAnimationStateImpl} instance with initial state.
-     */
-    public ElysiumAnimationStateImpl() {
-        this.playing = false;
-        this.animatedTime = 0;
-        this.lastUpdateTime = 0;
-    }
+    public ElysiumAnimationStateImpl() {}
 
     public void play(boolean force) {
         if (force || !playing) {
@@ -47,11 +40,11 @@ public class ElysiumAnimationStateImpl extends ElysiumAnimationState {
         this.playing = buffer.readBoolean();
     }
 
-    public long animatedTime() {
+    public long getAnimatedTime() {
         return this.animatedTime;
     }
 
-    public long lastUpdateTime() {
+    public long getLastUpdateTime() {
         return this.lastUpdateTime;
     }
 

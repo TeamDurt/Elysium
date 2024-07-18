@@ -9,14 +9,14 @@ public interface TimedAnimationState {
      *
      * @return Current animation time in milliseconds.
      */
-    long animatedTime();
+    long getAnimatedTime();
 
     /**
      * Returns the time of the last update in milliseconds.
      *
      * @return Last update time in milliseconds.
      */
-    long lastUpdateTime();
+    long getLastUpdateTime();
 
     /**
      * Updates the animation state's time.
