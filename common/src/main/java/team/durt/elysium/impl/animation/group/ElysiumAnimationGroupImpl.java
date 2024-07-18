@@ -5,11 +5,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import team.durt.elysium.api.animation.group.ElysiumAnimationGroup;
 import team.durt.elysium.api.animation.state.ElysiumAnimationState;
+import team.durt.elysium.core.util.ElysiumSchedule;
 import team.durt.elysium.impl.animation.state.ElysiumAnimationStateImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAnimationGroup<T> {
     private final HashMap<String, AnimationDefinition> animations;
@@ -69,8 +71,9 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
 
     @Override
     public void playAnimation(String animationName, boolean once, boolean force) {
-        // todo add once scheduling
         animationStates.get(animationName).play(force);
+        long duration = (long) (animations.get(animationName).lengthInSeconds() * 1000);
+        ElysiumSchedule.schedule(() -> animationStates.get(animationName).stop(), duration, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -80,7 +83,7 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
 
     @Override
     public void performFirstPossibleTransition(T entity) {
-        for (Transition<T> transition : getState (activeState).transitions()) {
+        for (Transition<T> transition : getState(activeState).transitions()) {
             if (transition.condition().test(entity)) {
                 this.getActiveState().animations().forEach(this::stopAnimation);
                 setActiveState(transition.targetState());
