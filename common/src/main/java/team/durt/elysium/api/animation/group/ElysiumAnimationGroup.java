@@ -4,8 +4,8 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import team.durt.elysium.api.animation.state.ElysiumAnimationState;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -19,14 +19,14 @@ public abstract class ElysiumAnimationGroup<T extends LivingEntity> implements S
      *
      * @return Map of animation names to definitions.
      */
-    public abstract HashMap<String, AnimationDefinition> getAnimations();
+    public abstract Map<String, AnimationDefinition> getAnimations();
 
     /**
      * Returns states of defined animations.
      *
      * @return Map of animation names to states.
      */
-    public abstract HashMap<String, ElysiumAnimationState> getAnimationStates();
+    public abstract Map<String, ElysiumAnimationState> getAnimationStates();
 
     /**
      * Checks if an animation is playing.

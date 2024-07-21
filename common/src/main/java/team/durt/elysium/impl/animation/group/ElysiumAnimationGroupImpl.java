@@ -11,6 +11,7 @@ import team.durt.elysium.impl.animation.state.ElysiumAnimationStateImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAnimationGroup<T> {
@@ -31,7 +32,7 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
 
     @Override
     public List<State<T>> getStates() {
-        return states;
+        return List.copyOf(states);
     }
 
     @Override
@@ -55,13 +56,13 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
     }
 
     @Override
-    public HashMap<String, AnimationDefinition> getAnimations() {
-        return animations;
+    public Map<String, AnimationDefinition> getAnimations() {
+        return Map.copyOf(animations);
     }
 
     @Override
-    public HashMap<String, ElysiumAnimationState> getAnimationStates() {
-        return animationStates;
+    public Map<String, ElysiumAnimationState> getAnimationStates() {
+        return Map.copyOf(animationStates);
     }
 
     @Override
