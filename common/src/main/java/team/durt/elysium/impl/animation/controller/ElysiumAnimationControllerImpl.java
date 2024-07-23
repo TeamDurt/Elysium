@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
 import team.durt.elysium.api.animation.group.ElysiumAnimationGroup;
+import team.durt.elysium.core.platform.Services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
             this.animationGroups.values().forEach(group -> group.performFirstPossibleTransition(this.entity));
         }
         if (this.computedBy.equals(ComputedBy.SERVER)) {
-            // todo send to client
+            Services.NETWORK.sendControllerSyncPacket(this.entity.getId(), this);
         }
     }
 

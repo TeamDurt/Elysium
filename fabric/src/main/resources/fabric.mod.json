@@ -17,6 +17,9 @@
     "entrypoints": {
         "main": [
             "team.durt.elysium.core.ElysiumFabric"
+        ],
+        "client": [
+            "team.durt.elysium.core.ElysiumFabricClient"
         ]
     },
     "mixins": [
