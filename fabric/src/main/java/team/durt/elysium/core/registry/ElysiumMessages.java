@@ -3,7 +3,7 @@ package team.durt.elysium.core.registry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import org.jetbrains.annotations.ApiStatus;
-import team.durt.elysium.core.network.AnimationControllerSyncPacket;
+import team.durt.elysium.core.network.AnimationControllerSyncReceiver;
 import team.durt.elysium.core.network.AnimationControllerSyncPayload;
 
 @ApiStatus.Internal
@@ -13,7 +13,7 @@ public class ElysiumMessages {
     }
 
     public static void registerS2CPackets() {
-        ClientPlayNetworking.registerGlobalReceiver(AnimationControllerSyncPayload.TYPE, AnimationControllerSyncPacket::receive);
+        ClientPlayNetworking.registerGlobalReceiver(AnimationControllerSyncPayload.TYPE, AnimationControllerSyncReceiver::receive);
     }
 
     public static void registerC2SPackets() {

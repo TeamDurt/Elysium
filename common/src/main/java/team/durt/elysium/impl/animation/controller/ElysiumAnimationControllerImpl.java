@@ -81,6 +81,42 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         }
     }
 
+    @Override
+    public void writeCompatibilityData(FriendlyByteBuf buffer) {
+        buffer.writeInt(this.animationGroups.size());
+        this.animationGroups.forEach((name, group) -> {
+            buffer.writeUtf(name);
+            group.writeCompatibilityData(buffer);
+        });
+    }
+
+    @Override
+    public boolean checkCompatibility(FriendlyByteBuf buffer) {
+        int expectedSize = buffer.readInt();
+        if (expectedSize != this.animationGroups.size()) {
+            return false;
+        }
+        for (int i = 0; i < expectedSize; i++) {
+            if (!isGroupCompatible(buffer)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a single animation group is compatible based on the buffer's current position.
+     * Reads the group name from the buffer and checks if the group exists and is compatible.
+     *
+     * @param buffer The buffer containing compatibility data.
+     * @return true if the group is compatible, false otherwise.
+     */
+    private boolean isGroupCompatible(FriendlyByteBuf buffer) {
+        String name = buffer.readUtf();
+        ElysiumAnimationGroup<T> group = this.animationGroups.get(name);
+        return group != null && group.checkCompatibility(buffer);
+    }
+
     /**
      * Builder class for {@link ElysiumAnimationControllerImpl}.
      *

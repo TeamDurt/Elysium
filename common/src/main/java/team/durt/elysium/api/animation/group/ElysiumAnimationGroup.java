@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  *
  * @param <T> The entity type.
  */
-public abstract class ElysiumAnimationGroup<T extends LivingEntity> implements StateAnimationGroup<T>, SerializableAnimationGroup {
+public abstract class ElysiumAnimationGroup<T extends LivingEntity> implements StateAnimationGroup<T>, SerializableAnimationGroup, CompatibleAnimationGroup {
     /**
      * Returns defined animations.
      *

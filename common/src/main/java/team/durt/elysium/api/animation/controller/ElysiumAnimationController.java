@@ -3,6 +3,7 @@ package team.durt.elysium.api.animation.controller;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import team.durt.elysium.api.animation.group.CompatibleAnimationGroup;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -12,7 +13,7 @@ import java.util.function.Predicate;
  *
  * @param <T> The entity type.
  */
-public abstract class ElysiumAnimationController<T extends LivingEntity> implements GroupedAnimationController<T>, SerializableAnimationController {
+public abstract class ElysiumAnimationController<T extends LivingEntity> implements GroupedAnimationController<T>, SerializableAnimationController, CompatibleAnimationGroup {
     /**
      * Steps forward one tick for all animations.
      */

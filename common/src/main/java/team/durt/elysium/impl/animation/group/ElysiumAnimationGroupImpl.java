@@ -8,11 +8,9 @@ import team.durt.elysium.api.animation.state.ElysiumAnimationState;
 import team.durt.elysium.core.util.ElysiumSchedule;
 import team.durt.elysium.impl.animation.state.ElysiumAnimationStateImpl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAnimationGroup<T> {
     private final HashMap<String, AnimationDefinition> animations;
@@ -32,22 +30,22 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
 
     @Override
     public List<State<T>> getStates() {
-        return List.copyOf(states);
+        return List.copyOf(this.states);
     }
 
     @Override
     public State<T> getState(String stateName) {
-        return states.stream().filter(state -> state.name().equals(stateName)).findFirst().orElse(null);
+        return this.states.stream().filter(state -> state.name().equals(stateName)).findFirst().orElse(null);
     }
 
     @Override
     public String getDefaultState() {
-        return defaultState;
+        return this.defaultState;
     }
 
     @Override
     public State<T> getActiveState() {
-        return this.getState(activeState);
+        return this.getState(this.activeState);
     }
 
     @Override
@@ -57,36 +55,36 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
 
     @Override
     public Map<String, AnimationDefinition> getAnimations() {
-        return Map.copyOf(animations);
+        return Map.copyOf(this.animations);
     }
 
     @Override
     public Map<String, ElysiumAnimationState> getAnimationStates() {
-        return Map.copyOf(animationStates);
+        return Map.copyOf(this.animationStates);
     }
 
     @Override
     public boolean isAnimationPlaying(String animationName) {
-        return animationStates.get(animationName).isPlaying();
+        return this.animationStates.get(animationName).isPlaying();
     }
 
     @Override
     public void playAnimation(String animationName, boolean once, boolean force) {
-        animationStates.get(animationName).play(force);
+        this.animationStates.get(animationName).play(force);
         if (once) {
             long duration = (long) (animations.get(animationName).lengthInSeconds() * 1000);
-            ElysiumSchedule.schedule(() -> animationStates.get(animationName).stop(), duration, TimeUnit.MILLISECONDS);
+            ElysiumSchedule.schedule(() -> this.animationStates.get(animationName).stop(), duration, TimeUnit.MILLISECONDS);
         }
     }
 
     @Override
     public void stopAnimation(String animationName) {
-        animationStates.get(animationName).stop();
+        this.animationStates.get(animationName).stop();
     }
 
     @Override
     public void performFirstPossibleTransition(T entity) {
-        for (Transition<T> transition : getState(activeState).transitions()) {
+        for (Transition<T> transition : getState(this.activeState).transitions()) {
             if (transition.condition().test(entity)) {
                 this.getActiveState().animations().forEach(this::stopAnimation);
                 setActiveState(transition.targetState());
@@ -99,8 +97,8 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
 
     @Override
     public void writeToBuffer(FriendlyByteBuf buffer) {
-        buffer.writeInt(animationStates.size());
-        animationStates.forEach((name, state) -> {
+        buffer.writeInt(this.animationStates.size());
+        this.animationStates.forEach((name, state) -> {
             buffer.writeUtf(name);
             state.writeToBuffer(buffer);
         });
@@ -113,8 +111,22 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
             String name = buffer.readUtf();
             ElysiumAnimationState state = new ElysiumAnimationStateImpl();
             state.readFromBuffer(buffer);
-            animationStates.put(name, state);
+            this.animationStates.put(name, state);
         }
+    }
+
+    @Override
+    public void writeCompatibilityData(FriendlyByteBuf buffer) {
+        buffer.writeInt(this.animationStates.size());
+        this.animationStates.keySet().forEach(buffer::writeUtf);
+    }
+
+    @Override
+    public boolean checkCompatibility(FriendlyByteBuf buffer) {
+        int expectedSize = buffer.readInt();
+        return expectedSize == this.animationStates.size() && IntStream.range(0, expectedSize)
+                .mapToObj(i -> buffer.readUtf())
+                .allMatch(this.animationStates::containsKey);
     }
 
     /**
@@ -127,12 +139,13 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
         private final List<State<T>> states = new ArrayList<>();
         private String defaultState;
 
-        public Builder() {}
+        public Builder() {
+        }
 
         /**
          * Define the animation with the given name.
          *
-         * @param name The name of the animation.
+         * @param name      The name of the animation.
          * @param animation The animation definition.
          * @return The builder instance.
          */
@@ -144,8 +157,8 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
         /**
          * Add the given state to the animation group.
          *
-         * @param name The name of the state.
-         * @param animations The animations to be played in the state.
+         * @param name        The name of the state.
+         * @param animations  The animations to be played in the state.
          * @param transitions The transitions to other states.
          * @return The builder instance.
          */
