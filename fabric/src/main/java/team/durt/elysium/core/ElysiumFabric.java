@@ -9,7 +9,6 @@ public class ElysiumFabric implements ModInitializer {
         ElysiumCommon.init();
 
         ElysiumMessages.registerPayloadTypes();
-
         ElysiumMessages.registerC2SPackets();
     }
 }

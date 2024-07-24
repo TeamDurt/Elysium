@@ -16,10 +16,6 @@ public class AnimationControllerSyncHandler {
 
     private static Optional<AnimatedEntity> findEntity(AnimationControllerSyncPayload payload, IPayloadContext context) {
         Entity entity = context.player().level().getEntity(payload.entityId());
-        if (entity instanceof AnimatedEntity animatedEntity) {
-            return Optional.of(animatedEntity);
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(entity).filter(AnimatedEntity.class::isInstance).map(AnimatedEntity.class::cast);
     }
 }
