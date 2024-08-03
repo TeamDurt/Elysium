@@ -59,6 +59,11 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
     }
 
     @Override
+    public Optional<AnimationDefinition> getAnimation(String animationName) {
+        return Optional.ofNullable(this.animations.get(animationName));
+    }
+
+    @Override
     public Map<String, ElysiumAnimationState> getAnimationStates() {
         return Map.copyOf(this.animationStates);
     }

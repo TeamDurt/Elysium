@@ -6,6 +6,7 @@ import team.durt.elysium.api.animation.state.ElysiumAnimationState;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -20,6 +21,14 @@ public abstract class ElysiumAnimationGroup<T extends LivingEntity> implements S
      * @return Map of animation names to definitions.
      */
     public abstract Map<String, AnimationDefinition> getAnimations();
+
+    /**
+     * Retrieves an animation definition by name.
+     *
+     * @param animationName Name of the animation.
+     * @return The animation definition.
+     */
+    public abstract Optional<AnimationDefinition> getAnimation(String animationName);
 
     /**
      * Returns states of defined animations.
