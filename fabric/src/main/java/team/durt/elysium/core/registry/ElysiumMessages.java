@@ -6,8 +6,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import org.jetbrains.annotations.ApiStatus;
 import team.durt.elysium.core.network.AnimationControllerCompatibilityCheckPayload;
 import team.durt.elysium.core.network.AnimationControllerCompatibilityCheckReceiver;
-import team.durt.elysium.core.network.AnimationControllerSyncReceiver;
 import team.durt.elysium.core.network.AnimationControllerSyncPayload;
+import team.durt.elysium.core.network.AnimationControllerSyncReceiver;
 
 @ApiStatus.Internal
 public class ElysiumMessages {

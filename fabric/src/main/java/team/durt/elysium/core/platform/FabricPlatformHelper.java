@@ -1,9 +1,9 @@
 package team.durt.elysium.core.platform;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 import team.durt.elysium.core.platform.services.IPlatformHelper;
-import net.fabricmc.loader.api.FabricLoader;
 
 @ApiStatus.Internal
 public class FabricPlatformHelper implements IPlatformHelper {
