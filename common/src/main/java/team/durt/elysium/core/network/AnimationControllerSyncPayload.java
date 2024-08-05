@@ -17,7 +17,7 @@ public record AnimationControllerSyncPayload(int entityId, FriendlyByteBuf contr
 
     private void write(FriendlyByteBuf buf) {
         buf.writeInt(entityId);
-        buf.writeBytes(controllerData);
+        buf.writeBytes(controllerData.copy());
     }
 
     private static AnimationControllerSyncPayload read(FriendlyByteBuf buf) {

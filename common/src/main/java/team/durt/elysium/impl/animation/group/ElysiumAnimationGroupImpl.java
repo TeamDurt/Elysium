@@ -114,9 +114,7 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
         int size = buffer.readInt();
         for (int i = 0; i < size; i++) {
             String name = buffer.readUtf();
-            ElysiumAnimationState state = new ElysiumAnimationStateImpl();
-            state.readFromBuffer(buffer);
-            this.animationStates.put(name, state);
+            this.animationStates.get(name).readFromBuffer(buffer);
         }
     }
 

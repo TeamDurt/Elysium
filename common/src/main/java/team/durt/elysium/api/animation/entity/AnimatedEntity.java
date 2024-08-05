@@ -5,13 +5,14 @@ import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
 
 /**
  * Interface for entities that can be animated.
+ *
+ * @param <T> The type of entity this controller is for.
  */
-public interface AnimatedEntity {
+public interface AnimatedEntity<T extends LivingEntity> {
     /**
      * Retrieves the animation controller for this entity.
      *
-     * @param <T> The type of entity this controller is for.
      * @return The {@link ElysiumAnimationController} for this entity.
      */
-    <T extends LivingEntity> ElysiumAnimationController<T> getAnimationController();
+    ElysiumAnimationController<T> getAnimationController();
 }

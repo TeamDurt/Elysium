@@ -37,7 +37,8 @@ public class ElysiumAnimationStateImpl extends ElysiumAnimationState {
     }
 
     public void readFromBuffer(FriendlyByteBuf buffer) {
-        this.playing = buffer.readBoolean();
+        if (buffer.readBoolean()) play(false);
+        else stop();
     }
 
     public long getAnimatedTime() {
@@ -50,9 +51,11 @@ public class ElysiumAnimationStateImpl extends ElysiumAnimationState {
 
     public void updateTime(float ageInTicks, float speed) {
         if (this.playing) {
-            long i = Mth.lfloor(animatedTime * 1000.0F / 20.0F);
-            this.animatedTime += (long)((i - this.lastUpdateTime) * speed);
-            this.lastUpdateTime = i;
+            long i = Mth.lfloor(ageInTicks * 1000.0F / 20.0F);
+            if (this.lastUpdateTime != 0) {
+                this.animatedTime += (long)((i - this.lastUpdateTime) * speed);
+            }
+            lastUpdateTime = i;
         }
     }
 }

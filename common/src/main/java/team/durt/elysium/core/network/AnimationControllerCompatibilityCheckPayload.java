@@ -17,7 +17,7 @@ public record AnimationControllerCompatibilityCheckPayload(int entityId, Friendl
 
     private void write(FriendlyByteBuf buf) {
         buf.writeInt(entityId);
-        buf.writeBytes(compatibilityData);
+        buf.writeBytes(compatibilityData.copy());
     }
 
     private static AnimationControllerCompatibilityCheckPayload read(FriendlyByteBuf buf) {

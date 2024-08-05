@@ -5,8 +5,10 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
+import team.durt.elysium.api.animation.entity.AnimatedEntity;
 import team.durt.elysium.api.animation.model.AnimatedModel;
 
 import java.util.List;
@@ -15,14 +17,14 @@ import java.util.Optional;
 
 @ApiStatus.Internal
 public class ElysiumKeyframeAnimations {
-    public static void animate(AnimatedModel model, AnimationDefinition definition, long animatedTime, float scale, Vector3f animationVectorCache) {
+    public static <T extends LivingEntity & AnimatedEntity<T>> void animate(AnimatedModel<T> model, AnimationDefinition definition, long animatedTime, float scale, Vector3f animationVectorCache) {
         float f = getElapsedSeconds(definition, animatedTime);
 
         for (Map.Entry<String, List<AnimationChannel>> entry : definition.boneAnimations().entrySet()) {
-            Optional<ModelPart> optional = model.getAnyDescendantWithName(entry.getKey());
+            Optional<ModelPart> optional = model.getModelPart(entry.getKey());
             List<AnimationChannel> list = entry.getValue();
-            optional.ifPresent(p_232330_ -> list.forEach(p_288241_ -> {
-                Keyframe[] akeyframe = p_288241_.keyframes();
+            optional.ifPresent(part -> list.forEach(channel -> {
+                Keyframe[] akeyframe = channel.keyframes();
                 int i = Math.max(0, Mth.binarySearch(0, akeyframe.length, i1 -> f <= akeyframe[i1].timestamp()) - 1);
                 int j = Math.min(akeyframe.length - 1, i + 1);
                 Keyframe keyframe = akeyframe[i];
@@ -36,7 +38,7 @@ public class ElysiumKeyframeAnimations {
                 }
 
                 keyframe1.interpolation().apply(animationVectorCache, f2, akeyframe, i, j, scale);
-                p_288241_.target().apply(p_232330_, animationVectorCache);
+                channel.target().apply(part, animationVectorCache);
             }));
         }
     }

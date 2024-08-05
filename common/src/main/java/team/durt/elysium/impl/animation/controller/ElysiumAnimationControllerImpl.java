@@ -1,11 +1,14 @@
 package team.durt.elysium.impl.animation.controller;
 
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
 import team.durt.elysium.api.animation.group.ElysiumAnimationGroup;
 import team.durt.elysium.core.platform.Services;
+import team.durt.elysium.impl.animation.group.ElysiumAnimationGroupImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +34,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         if (this.computedBy.isComputingSide(this.entity.level())) {
             this.animationGroups.values().forEach(group -> group.performFirstPossibleTransition(this.entity));
         }
-        if (this.computedBy.equals(ComputedBy.SERVER)) {
+        if (this.computedBy.equals(ComputedBy.SERVER) && !this.entity.level().isClientSide()) {
             Services.NETWORK.sendControllerSyncPacket(this.entity.getId(), this);
         }
     }
@@ -75,9 +78,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         int size = buffer.readInt();
         for (int i = 0; i < size; i++) {
             String groupName = buffer.readUtf();
-            ElysiumAnimationGroup<T> group = getAnimationGroup(groupName);
-            group.readFromBuffer(buffer);
-            this.animationGroups.put(groupName, group);
+            getAnimationGroup(groupName).readFromBuffer(buffer);
         }
     }
 
@@ -163,6 +164,31 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         public Builder<T> addGroup(String name, ElysiumAnimationGroup<T> group) {
             this.animationGroups.put(name, group);
             return this;
+        }
+
+        /**
+         * Add a group with one animation set that is played when the predicate is true.
+         *
+         * @param name The name of the group.
+         * @param animations The animations to be played.
+         * @param predicate The predicate for the set.
+         * @return The builder instance.
+         */
+        public Builder<T> addSingleton(String name, List<Pair<String, AnimationDefinition>> animations, Predicate<T> predicate) {
+            ElysiumAnimationGroupImpl.Builder<T> builder = new ElysiumAnimationGroupImpl.Builder<>();
+
+            animations.forEach(pair -> builder.define(pair.getFirst(), pair.getSecond()));
+
+            builder.addState("idle", ImmutableList.of(), ImmutableList.of(
+                    new ElysiumAnimationGroup.Transition<>("active", predicate, ImmutableList.of())
+            ));
+            builder.addState("active", animations.stream()
+                    .map(Pair::getFirst)
+                    .collect(ImmutableList.toImmutableList()), ImmutableList.of(
+                    new ElysiumAnimationGroup.Transition<>("idle", predicate.negate(), ImmutableList.of())
+            ));
+
+            return this.addGroup(name, builder.defaultState("idle").build());
         }
 
         /**
