@@ -14,6 +14,39 @@ pluginManagement {
                 includeGroup('fabric-loom')
             }
         }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Sponge'
+                    url = uri('https://repo.spongepowered.org/repository/maven-public')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups("org.spongepowered")
+            }
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'Forge'
+                    url = uri('https://maven.minecraftforge.net')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups('net.minecraftforge')
+            }
+        }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'ParchmentMC'
+                    url = uri('https://maven.parchmentmc.org')
+                }
+            }
+            filter {
+                includeGroupAndSubgroups('org.parchmentmc')
+            }
+        }
     }
 }
 
@@ -26,3 +59,4 @@ rootProject.name = 'Elysium'
 include('common')
 include('fabric')
 include('neoforge')
+include('forge')

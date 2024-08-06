@@ -1,8 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "team.durt.elysium.core.mixin",
-  "refmap": "${mod_id}.refmap.json",
+  "package": "team.durt.elysium.mixin",
   "compatibilityLevel": "JAVA_18",
   "mixins": [],
   "client": [],
@@ -11,4 +10,3 @@
     "defaultRequire": 1
   }
 }
-

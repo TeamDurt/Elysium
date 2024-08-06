@@ -24,7 +24,7 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
         this.states = states;
         this.defaultState = defaultState;
         this.activeState = defaultState;
-        states.forEach(state -> state.animations().forEach(animation -> animationStates.put(animation, new ElysiumAnimationStateImpl())));
+        animations.keySet().forEach(animation -> animationStates.put(animation, new ElysiumAnimationStateImpl()));
         this.getActiveState().animations().forEach(animation -> playAnimation(animation, false, false));
     }
 
