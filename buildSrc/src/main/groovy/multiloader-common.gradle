@@ -14,7 +14,7 @@ java {
 }
 
 tasks.withType(Javadoc).configureEach {
-    options.addStringOption('Xdoclint:-missing', '-quiet')
+    options.addBooleanOption('Xdoclint:-missing', true)
 }
 
 repositories {
