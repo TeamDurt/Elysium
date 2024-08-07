@@ -40,23 +40,22 @@ public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
      * Animates an entity using the provided model.
      *
      * @param entity The entity to animate.
-     * @param model The model to animate.
      * @param limbSwing The limb swing.
      * @param limbSwingAmount The limb swing amount.
      * @param ageInTicks The age in ticks.
      */
-    default void animate(T entity, AnimatedModel<T> model, float limbSwing, float limbSwingAmount, float ageInTicks) {
+    default void animate(T entity, float limbSwing, float limbSwingAmount, float ageInTicks) {
         ElysiumAnimationController<T> controller = entity.getAnimationController();
         controller.getWalkingAnimations().stream()
                 .filter(tWalkingAnimation -> tWalkingAnimation.predicate().test(entity))
-                .forEach(tWalkingAnimation -> animateWalking(tWalkingAnimation, model, limbSwing, limbSwingAmount));
+                .forEach(tWalkingAnimation -> animateWalking(tWalkingAnimation, limbSwing, limbSwingAmount));
         controller.getAnimationGroups().forEach((groupName, group) -> {
             group.getAnimationStates().forEach((stateName, state) -> {
                 // todo provide speed
                 state.updateTime(ageInTicks, 1.0F);
                 if (state.isPlaying()) {
                     AnimationDefinition animationDefinition = group.getAnimation(stateName).orElseThrow(() -> new IllegalStateException("Animation not found"));
-                    ElysiumKeyframeAnimations.animate(model, animationDefinition, state.getAnimatedTime(), 1.0F, model.ANIMATION_VECTOR_CACHE);
+                    ElysiumKeyframeAnimations.animate(this, animationDefinition, state.getAnimatedTime(), 1.0F, this.ANIMATION_VECTOR_CACHE);
                 }
             });
         });
@@ -66,14 +65,13 @@ public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
      * Animates walking.
      *
      * @param animation The walking animation.
-     * @param model The model to animate.
      * @param limbSwing The limb swing.
      * @param limbSwingAmount The limb swing amount.
      */
     @ApiStatus.Internal
-    default void animateWalking(ElysiumAnimationController.WalkingAnimation<T> animation, AnimatedModel<T> model, float limbSwing, float limbSwingAmount) {
+    default void animateWalking(ElysiumAnimationController.WalkingAnimation<T> animation, float limbSwing, float limbSwingAmount) {
         long i = (long)(limbSwing * 50.0F * animation.maxSpeed());
         float f = Math.min(limbSwingAmount * animation.scaleFactor(), 1.0F);
-        ElysiumKeyframeAnimations.animate(model, animation.animationDefinition(), i, f, model.ANIMATION_VECTOR_CACHE);
+        ElysiumKeyframeAnimations.animate(this, animation.animationDefinition(), i, f, this.ANIMATION_VECTOR_CACHE);
     }
 }

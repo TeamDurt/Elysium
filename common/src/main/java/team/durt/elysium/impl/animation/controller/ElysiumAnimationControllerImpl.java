@@ -132,7 +132,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         /**
          * Create a new builder instance.
          *
-         * @param entity The entity to be animated.
+         * @param entity     The entity to be animated.
          * @param computedBy The side on which the animations are computed.
          */
         public Builder(T entity, ComputedBy computedBy) {
@@ -143,10 +143,10 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         /**
          * Add a walking animation to the controller.
          *
-         * @param animation The animation definition.
-         * @param maxSpeed The maximum speed of the entity.
+         * @param animation   The animation definition.
+         * @param maxSpeed    The maximum speed of the entity.
          * @param scaleFactor The scale factor of the animation.
-         * @param predicate The predicate for the animation.
+         * @param predicate   The predicate for the animation.
          * @return The builder instance.
          */
         public Builder<T> walking(AnimationDefinition animation, float maxSpeed, float scaleFactor, Predicate<T> predicate) {
@@ -157,7 +157,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         /**
          * Add the given animation group to the controller.
          *
-         * @param name The name of the group.
+         * @param name  The name of the group.
          * @param group The animation group.
          * @return The builder instance.
          */
@@ -169,26 +169,46 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
         /**
          * Add a group with one animation set that is played when the predicate is true.
          *
-         * @param name The name of the group.
-         * @param animations The animations to be played.
-         * @param predicate The predicate for the set.
+         * @param name          The name of the group.
+         * @param animations    The animations to be played.
+         * @param endAnimations The animations to be played when the predicate turns false.
+         * @param predicate     The predicate for the set.
          * @return The builder instance.
          */
-        public Builder<T> addSingleton(String name, List<Pair<String, AnimationDefinition>> animations, Predicate<T> predicate) {
+        public Builder<T> addSingleton(String name, List<Pair<String, AnimationDefinition>> animations, List<Pair<String, AnimationDefinition>> endAnimations, Predicate<T> predicate) {
             ElysiumAnimationGroupImpl.Builder<T> builder = new ElysiumAnimationGroupImpl.Builder<>();
 
             animations.forEach(pair -> builder.define(pair.getFirst(), pair.getSecond()));
+            endAnimations.forEach(pair -> builder.define(pair.getFirst(), pair.getSecond()));
 
             builder.addState("idle", ImmutableList.of(), ImmutableList.of(
                     new ElysiumAnimationGroup.Transition<>("active", predicate, ImmutableList.of())
             ));
-            builder.addState("active", animations.stream()
-                    .map(Pair::getFirst)
-                    .collect(ImmutableList.toImmutableList()), ImmutableList.of(
-                    new ElysiumAnimationGroup.Transition<>("idle", predicate.negate(), ImmutableList.of())
-            ));
+            builder.addState(
+                    "active",
+                    animations.stream().map(Pair::getFirst).collect(ImmutableList.toImmutableList()),
+                    ImmutableList.of(
+                            new ElysiumAnimationGroup.Transition<>(
+                                    "idle",
+                                    predicate.negate(),
+                                    endAnimations.stream().map(Pair::getFirst).collect(ImmutableList.toImmutableList())
+                            )
+                    )
+            );
 
             return this.addGroup(name, builder.defaultState("idle").build());
+        }
+
+        /**
+         * Add a group with one animation set that is played when the predicate is true.
+         *
+         * @param name       The name of the group.
+         * @param animations The animations to be played.
+         * @param predicate  The predicate for the set.
+         * @return The builder instance.
+         */
+        public Builder<T> addSingleton(String name, List<Pair<String, AnimationDefinition>> animations, Predicate<T> predicate) {
+            return this.addSingleton(name, animations, ImmutableList.of(), predicate);
         }
 
         /**
