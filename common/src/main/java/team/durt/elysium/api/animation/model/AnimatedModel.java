@@ -22,7 +22,7 @@ public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
      *
      * @return The root {@link ModelPart} of this model.
      */
-    ModelPart root();
+    ModelPart getRoot();
 
     /**
      * Retrieves a model part by name.
@@ -32,8 +32,8 @@ public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
      */
     default Optional<ModelPart> getModelPart(String name) {
         return name.equals("root")
-                ? Optional.of(this.root())
-                : this.root().getAllParts().filter(part -> part.hasChild(name)).findFirst().map(part -> part.getChild(name));
+                ? Optional.of(this.getRoot())
+                : this.getRoot().getAllParts().filter(part -> part.hasChild(name)).findFirst().map(part -> part.getChild(name));
     }
 
     /**
