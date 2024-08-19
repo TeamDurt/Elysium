@@ -1,5 +1,8 @@
 package team.durt.elysium.core.platform.services;
 
+import org.jetbrains.annotations.ApiStatus;
+
+@ApiStatus.Internal
 public interface IPlatformHelper {
 
     /**

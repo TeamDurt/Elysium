@@ -3,10 +3,12 @@ package team.durt.elysium.core.network;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.ApiStatus;
 import team.durt.elysium.api.animation.entity.AnimatedEntity;
 
 import java.util.Optional;
 
+@ApiStatus.Internal
 public class AnimationControllerCompatibilityCheckReceiver {
     public static void receive(AnimationControllerCompatibilityCheckPayload payload, ServerPlayNetworking.Context context) {
         findEntity(payload, context).ifPresent(entity -> {

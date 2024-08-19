@@ -30,17 +30,43 @@ public class ElysiumKeyframeAnimations {
                 Keyframe keyframe = akeyframe[i];
                 Keyframe keyframe1 = akeyframe[j];
                 float f1 = f - keyframe.timestamp();
-                float f2;
+                float delta;
                 if (j != i) {
-                    f2 = Mth.clamp(f1 / (keyframe1.timestamp() - keyframe.timestamp()), 0.0F, 1.0F);
+                    delta = Mth.clamp(f1 / (keyframe1.timestamp() - keyframe.timestamp()), 0.0F, 1.0F);
                 } else {
-                    f2 = 0.0F;
+                    delta = 0.0F;
                 }
 
-                keyframe1.interpolation().apply(animationVectorCache, f2, akeyframe, i, j, scale);
-                channel.target().apply(part, animationVectorCache);
+                keyframe1.interpolation().apply(animationVectorCache, delta, akeyframe, i, j, scale);
+
+//                channel.target().apply(part, animationVectorCache);
+                applyAnimationWithBlending(part, channel, definition, animatedTime, animationVectorCache);
             }));
         }
+    }
+
+    private static void applyAnimationWithBlending(ModelPart part, AnimationChannel channel, AnimationDefinition definition, long animatedTime, Vector3f animationVectorCache) {
+        float blendTime = Math.min(0.5F, definition.looping() ? 0.5F : definition.lengthInSeconds()) * 1000F;
+        float blendDelta = Math.clamp(animatedTime, 0F, blendTime) / 500F;
+
+        if (channel.target() == AnimationChannel.Targets.POSITION) {
+            part.x = easeInOutQuad(part.x, animationVectorCache.x, blendDelta);
+            part.y = easeInOutQuad(part.y, animationVectorCache.y, blendDelta);
+            part.z = easeInOutQuad(part.z, animationVectorCache.z, blendDelta);
+        } else if (channel.target() == AnimationChannel.Targets.ROTATION) {
+            part.xRot = easeInOutQuad(part.xRot, animationVectorCache.x, blendDelta);
+            part.yRot = easeInOutQuad(part.yRot, animationVectorCache.y, blendDelta);
+            part.zRot = easeInOutQuad(part.zRot, animationVectorCache.z, blendDelta);
+        } else if (channel.target() == AnimationChannel.Targets.SCALE) {
+            part.xScale = easeInOutQuad(part.xScale, animationVectorCache.x, blendDelta);
+            part.yScale = easeInOutQuad(part.yScale, animationVectorCache.y, blendDelta);
+            part.zScale = easeInOutQuad(part.zScale, animationVectorCache.z, blendDelta);
+        }
+    }
+
+    private static float easeInOutQuad(float from, float to, float delta) {
+        float eased = delta < 0.5F ? 2F * delta * delta : (float) (1 - Math.pow(-2 * delta + 2, 2) / 2);
+        return from + (to - from) * eased;
     }
 
     private static float getElapsedSeconds(AnimationDefinition animationDefinition, long animatedTime) {

@@ -6,11 +6,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.ApiStatus;
 import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
 import team.durt.elysium.api.animation.entity.AnimatedEntity;
 import team.durt.elysium.core.Constants;
 import team.durt.elysium.core.network.AnimationControllerCompatibilityCheckPayload;
 
+@ApiStatus.Internal
 @EventBusSubscriber(modid = Constants.MOD_ID)
 public class ElysiumNeoForgeGameEvents {
     @SubscribeEvent

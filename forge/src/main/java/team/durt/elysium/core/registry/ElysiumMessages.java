@@ -6,12 +6,14 @@ import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.SimpleChannel;
+import org.jetbrains.annotations.ApiStatus;
 import team.durt.elysium.core.Constants;
 import team.durt.elysium.core.network.AnimationControllerCompatibilityCheckHandler;
 import team.durt.elysium.core.network.AnimationControllerCompatibilityCheckPayload;
 import team.durt.elysium.core.network.AnimationControllerSyncHandler;
 import team.durt.elysium.core.network.AnimationControllerSyncPayload;
 
+@ApiStatus.Internal
 public class ElysiumMessages {
     private static final int PROTOCOL_VERSION = 1;
     private static SimpleChannel INSTANCE;

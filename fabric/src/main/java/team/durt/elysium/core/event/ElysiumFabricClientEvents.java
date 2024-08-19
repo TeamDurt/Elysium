@@ -6,10 +6,12 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.ApiStatus;
 import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
 import team.durt.elysium.api.animation.entity.AnimatedEntity;
 import team.durt.elysium.core.network.AnimationControllerCompatibilityCheckPayload;
 
+@ApiStatus.Internal
 public class ElysiumFabricClientEvents {
     public static void register() {
         ClientEntityEvents.ENTITY_LOAD.register(ElysiumFabricClientEvents::checkEntityAnimationsCompatibility);
