@@ -47,7 +47,7 @@ public class ElysiumKeyframeAnimations {
 
     private static void applyAnimationWithBlending(ModelPart part, AnimationChannel channel, AnimationDefinition definition, long animatedTime, Vector3f animationVectorCache) {
         float blendTime = Math.min(0.5F, definition.looping() ? 0.5F : definition.lengthInSeconds()) * 1000F;
-        float blendDelta = Math.clamp(animatedTime, 0F, blendTime) / 500F;
+        float blendDelta = Mth.clamp(animatedTime / blendTime, 0.0F, 1.0F);
 
         if (channel.target() == AnimationChannel.Targets.POSITION) {
             part.x = easeInOutQuad(part.x, animationVectorCache.x, blendDelta);
