@@ -39,29 +39,20 @@ public class ElysiumKeyframeAnimations {
 
                 keyframe1.interpolation().apply(animationVectorCache, delta, akeyframe, i, j, scale);
 
-//                channel.target().apply(part, animationVectorCache);
-                applyAnimationWithBlending(part, channel, definition, animatedTime, animationVectorCache);
+                channel.target().apply(part, animationVectorCache);
             }));
         }
     }
 
     private static void applyAnimationWithBlending(ModelPart part, AnimationChannel channel, AnimationDefinition definition, long animatedTime, Vector3f animationVectorCache) {
         float blendTime = Math.min(0.5F, definition.looping() ? 0.5F : definition.lengthInSeconds()) * 1000F;
-        float blendDelta = Mth.clamp(animatedTime / blendTime, 0.0F, 1.0F);
+        float blendDelta = Mth.clamp((float) animatedTime / blendTime, 0.0F, 1.0F);
 
-        if (channel.target() == AnimationChannel.Targets.POSITION) {
-            part.x = easeInOutQuad(part.x, animationVectorCache.x, blendDelta);
-            part.y = easeInOutQuad(part.y, animationVectorCache.y, blendDelta);
-            part.z = easeInOutQuad(part.z, animationVectorCache.z, blendDelta);
-        } else if (channel.target() == AnimationChannel.Targets.ROTATION) {
-            part.xRot = easeInOutQuad(part.xRot, animationVectorCache.x, blendDelta);
-            part.yRot = easeInOutQuad(part.yRot, animationVectorCache.y, blendDelta);
-            part.zRot = easeInOutQuad(part.zRot, animationVectorCache.z, blendDelta);
-        } else if (channel.target() == AnimationChannel.Targets.SCALE) {
-            part.xScale = easeInOutQuad(part.xScale, animationVectorCache.x, blendDelta);
-            part.yScale = easeInOutQuad(part.yScale, animationVectorCache.y, blendDelta);
-            part.zScale = easeInOutQuad(part.zScale, animationVectorCache.z, blendDelta);
-        }
+        float easedX = easeInOutQuad(0, animationVectorCache.x, blendDelta);
+        float easedY = easeInOutQuad(0, animationVectorCache.y, blendDelta);
+        float easedZ = easeInOutQuad(0, animationVectorCache.z, blendDelta);
+
+        channel.target().apply(part, new Vector3f(easedX, easedY, easedZ));
     }
 
     private static float easeInOutQuad(float from, float to, float delta) {
