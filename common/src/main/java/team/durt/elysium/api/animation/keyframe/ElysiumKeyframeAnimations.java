@@ -39,13 +39,17 @@ public class ElysiumKeyframeAnimations {
 
                 keyframe1.interpolation().apply(animationVectorCache, delta, akeyframe, i, j, scale);
 
-                float blendDelta = Mth.clamp((float) animatedTime / definition.blendingDuration(), 0.0F, 1.0F);
+                if (definition.lengthInSeconds() == 0.0F) {
+                    channel.target().apply(part, animationVectorCache);
+                } else {
+                    float blendDelta = Mth.clamp((float) animatedTime / definition.blendingDuration(), 0.0F, 1.0F);
 
-                float easedX = easeInOutQuad(0, animationVectorCache.x, blendDelta);
-                float easedY = easeInOutQuad(0, animationVectorCache.y, blendDelta);
-                float easedZ = easeInOutQuad(0, animationVectorCache.z, blendDelta);
+                    float easedX = easeInOutQuad(0, animationVectorCache.x, blendDelta);
+                    float easedY = easeInOutQuad(0, animationVectorCache.y, blendDelta);
+                    float easedZ = easeInOutQuad(0, animationVectorCache.z, blendDelta);
 
-                channel.target().apply(part, new Vector3f(easedX, easedY, easedZ));
+                    channel.target().apply(part, new Vector3f(easedX, easedY, easedZ));
+                }
             }));
         }
     }
