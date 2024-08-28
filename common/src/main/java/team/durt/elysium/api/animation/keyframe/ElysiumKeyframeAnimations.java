@@ -42,7 +42,7 @@ public class ElysiumKeyframeAnimations {
                 if (definition.lengthInSeconds() == 0.0F || definition.blendingDuration() == 0.0F) {
                     channel.target().apply(part, animationVectorCache);
                 } else {
-                    float blendDelta = Mth.clamp((float) animatedTime / definition.blendingDuration(), 0.0F, 1.0F);
+                    float blendDelta = Mth.clamp((float) animatedTime / 1000.0F / definition.blendingDuration(), 0.0F, 1.0F);
 
                     float easedX = easeInOutQuad(0, animationVectorCache.x, blendDelta);
                     float easedY = easeInOutQuad(0, animationVectorCache.y, blendDelta);
