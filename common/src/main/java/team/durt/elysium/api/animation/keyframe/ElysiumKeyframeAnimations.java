@@ -39,7 +39,7 @@ public class ElysiumKeyframeAnimations {
 
                 keyframe1.interpolation().apply(animationVectorCache, delta, akeyframe, i, j, scale);
 
-                if (definition.lengthInSeconds() == 0.0F) {
+                if (definition.lengthInSeconds() == 0.0F || definition.blendingDuration() == 0.0F) {
                     channel.target().apply(part, animationVectorCache);
                 } else {
                     float blendDelta = Mth.clamp((float) animatedTime / definition.blendingDuration(), 0.0F, 1.0F);
