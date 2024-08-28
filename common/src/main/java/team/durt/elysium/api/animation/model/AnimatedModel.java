@@ -1,11 +1,11 @@
 package team.durt.elysium.api.animation.model;
 
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
+import team.durt.elysium.api.animation.definition.ElysiumAnimationDefinition;
 import team.durt.elysium.api.animation.entity.AnimatedEntity;
 import team.durt.elysium.api.animation.keyframe.ElysiumKeyframeAnimations;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
  * Interface for models that can be animated.
  */
 public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
-    static final Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
+    Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
 
     /**
      * Retrieves the root model part of this model.
@@ -54,8 +54,8 @@ public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
                 // todo provide speed
                 state.updateTime(ageInTicks, 1.0F);
                 if (state.isPlaying()) {
-                    AnimationDefinition animationDefinition = group.getAnimation(stateName).orElseThrow(() -> new IllegalStateException("Animation not found"));
-                    ElysiumKeyframeAnimations.animate(this, animationDefinition, state.getAnimatedTime(), 1.0F, this.ANIMATION_VECTOR_CACHE);
+                    ElysiumAnimationDefinition animationDefinition = group.getAnimation(stateName).orElseThrow(() -> new IllegalStateException("Animation not found"));
+                    ElysiumKeyframeAnimations.animate(this, animationDefinition, state.getAnimatedTime(), 1.0F, ANIMATION_VECTOR_CACHE);
                 }
             });
         });
@@ -72,6 +72,6 @@ public interface AnimatedModel<T extends LivingEntity & AnimatedEntity<T>> {
     default void animateWalking(ElysiumAnimationController.WalkingAnimation<T> animation, float limbSwing, float limbSwingAmount) {
         long i = (long)(limbSwing * 50.0F * animation.maxSpeed());
         float f = Math.min(limbSwingAmount * animation.scaleFactor(), 1.0F);
-        ElysiumKeyframeAnimations.animate(this, animation.animationDefinition(), i, f, this.ANIMATION_VECTOR_CACHE);
+        ElysiumKeyframeAnimations.animate(this, animation.animationDefinition(), i, f, ANIMATION_VECTOR_CACHE);
     }
 }

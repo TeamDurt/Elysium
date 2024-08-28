@@ -2,10 +2,10 @@ package team.durt.elysium.impl.animation.controller;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import team.durt.elysium.api.animation.controller.ElysiumAnimationController;
+import team.durt.elysium.api.animation.definition.ElysiumAnimationDefinition;
 import team.durt.elysium.api.animation.group.ElysiumAnimationGroup;
 import team.durt.elysium.core.platform.Services;
 import team.durt.elysium.impl.animation.group.ElysiumAnimationGroupImpl;
@@ -149,7 +149,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
          * @param predicate   The predicate for the animation.
          * @return The builder instance.
          */
-        public Builder<T> walking(AnimationDefinition animation, float maxSpeed, float scaleFactor, Predicate<T> predicate) {
+        public Builder<T> walking(ElysiumAnimationDefinition animation, float maxSpeed, float scaleFactor, Predicate<T> predicate) {
             this.walkingAnimations.add(new WalkingAnimation<>(animation, maxSpeed, scaleFactor, predicate));
             return this;
         }
@@ -175,7 +175,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
          * @param predicate     The predicate for the set.
          * @return The builder instance.
          */
-        public Builder<T> addSingleton(String name, List<Pair<String, AnimationDefinition>> animations, List<Pair<String, AnimationDefinition>> endAnimations, Predicate<T> predicate) {
+        public Builder<T> addSingleton(String name, List<Pair<String, ElysiumAnimationDefinition>> animations, List<Pair<String, ElysiumAnimationDefinition>> endAnimations, Predicate<T> predicate) {
             ElysiumAnimationGroupImpl.Builder<T> builder = new ElysiumAnimationGroupImpl.Builder<>();
 
             animations.forEach(pair -> builder.define(pair.getFirst(), pair.getSecond()));
@@ -207,7 +207,7 @@ public class ElysiumAnimationControllerImpl<T extends LivingEntity> extends Elys
          * @param predicate  The predicate for the set.
          * @return The builder instance.
          */
-        public Builder<T> addSingleton(String name, List<Pair<String, AnimationDefinition>> animations, Predicate<T> predicate) {
+        public Builder<T> addSingleton(String name, List<Pair<String, ElysiumAnimationDefinition>> animations, Predicate<T> predicate) {
             return this.addSingleton(name, animations, ImmutableList.of(), predicate);
         }
 

@@ -1,13 +1,13 @@
 package team.durt.elysium.api.animation.keyframe;
 
 import net.minecraft.client.animation.AnimationChannel;
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
+import team.durt.elysium.api.animation.definition.ElysiumAnimationDefinition;
 import team.durt.elysium.api.animation.entity.AnimatedEntity;
 import team.durt.elysium.api.animation.model.AnimatedModel;
 
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @ApiStatus.Internal
 public class ElysiumKeyframeAnimations {
-    public static <T extends LivingEntity & AnimatedEntity<T>> void animate(AnimatedModel<T> model, AnimationDefinition definition, long animatedTime, float scale, Vector3f animationVectorCache) {
+    public static <T extends LivingEntity & AnimatedEntity<T>> void animate(AnimatedModel<T> model, ElysiumAnimationDefinition definition, long animatedTime, float scale, Vector3f animationVectorCache) {
         float f = getElapsedSeconds(definition, animatedTime);
 
         for (Map.Entry<String, List<AnimationChannel>> entry : definition.boneAnimations().entrySet()) {
@@ -39,20 +39,15 @@ public class ElysiumKeyframeAnimations {
 
                 keyframe1.interpolation().apply(animationVectorCache, delta, akeyframe, i, j, scale);
 
-                channel.target().apply(part, animationVectorCache);
+                float blendDelta = Mth.clamp((float) animatedTime / definition.blendingDuration(), 0.0F, 1.0F);
+
+                float easedX = easeInOutQuad(0, animationVectorCache.x, blendDelta);
+                float easedY = easeInOutQuad(0, animationVectorCache.y, blendDelta);
+                float easedZ = easeInOutQuad(0, animationVectorCache.z, blendDelta);
+
+                channel.target().apply(part, new Vector3f(easedX, easedY, easedZ));
             }));
         }
-    }
-
-    private static void applyAnimationWithBlending(ModelPart part, AnimationChannel channel, AnimationDefinition definition, long animatedTime, Vector3f animationVectorCache) {
-        float blendTime = Math.min(0.5F, definition.looping() ? 0.5F : definition.lengthInSeconds()) * 1000F;
-        float blendDelta = Mth.clamp((float) animatedTime / blendTime, 0.0F, 1.0F);
-
-        float easedX = easeInOutQuad(0, animationVectorCache.x, blendDelta);
-        float easedY = easeInOutQuad(0, animationVectorCache.y, blendDelta);
-        float easedZ = easeInOutQuad(0, animationVectorCache.z, blendDelta);
-
-        channel.target().apply(part, new Vector3f(easedX, easedY, easedZ));
     }
 
     private static float easeInOutQuad(float from, float to, float delta) {
@@ -60,7 +55,7 @@ public class ElysiumKeyframeAnimations {
         return from + (to - from) * eased;
     }
 
-    private static float getElapsedSeconds(AnimationDefinition animationDefinition, long animatedTime) {
+    private static float getElapsedSeconds(ElysiumAnimationDefinition animationDefinition, long animatedTime) {
         float f = (float) animatedTime / 1000.0F;
         return animationDefinition.looping() ? f % animationDefinition.lengthInSeconds() : f;
     }

@@ -1,8 +1,8 @@
 package team.durt.elysium.impl.animation.group;
 
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
+import team.durt.elysium.api.animation.definition.ElysiumAnimationDefinition;
 import team.durt.elysium.api.animation.group.ElysiumAnimationGroup;
 import team.durt.elysium.api.animation.state.ElysiumAnimationState;
 import team.durt.elysium.core.util.ElysiumSchedule;
@@ -13,13 +13,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAnimationGroup<T> {
-    private final HashMap<String, AnimationDefinition> animations;
+    private final HashMap<String, ElysiumAnimationDefinition> animations;
     private final HashMap<String, ElysiumAnimationState> animationStates = new HashMap<>();
     private final List<State<T>> states;
     private final String defaultState;
     private String activeState;
 
-    private ElysiumAnimationGroupImpl(HashMap<String, AnimationDefinition> animations, List<State<T>> states, String defaultState) {
+    private ElysiumAnimationGroupImpl(HashMap<String, ElysiumAnimationDefinition> animations, List<State<T>> states, String defaultState) {
         this.animations = animations;
         this.states = states;
         this.defaultState = defaultState;
@@ -54,12 +54,12 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
     }
 
     @Override
-    public Map<String, AnimationDefinition> getAnimations() {
+    public Map<String, ElysiumAnimationDefinition> getAnimations() {
         return Map.copyOf(this.animations);
     }
 
     @Override
-    public Optional<AnimationDefinition> getAnimation(String animationName) {
+    public Optional<ElysiumAnimationDefinition> getAnimation(String animationName) {
         return Optional.ofNullable(this.animations.get(animationName));
     }
 
@@ -138,7 +138,7 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
      * @param <T> The type of the entity.
      */
     public static class Builder<T extends LivingEntity> {
-        private final HashMap<String, AnimationDefinition> animations = new HashMap<>();
+        private final HashMap<String, ElysiumAnimationDefinition> animations = new HashMap<>();
         private final List<State<T>> states = new ArrayList<>();
         private String defaultState;
 
@@ -152,7 +152,7 @@ public class ElysiumAnimationGroupImpl<T extends LivingEntity> extends ElysiumAn
          * @param animation The animation definition.
          * @return The builder instance.
          */
-        public Builder<T> define(String name, AnimationDefinition animation) {
+        public Builder<T> define(String name, ElysiumAnimationDefinition animation) {
             animations.put(name, animation);
             return this;
         }

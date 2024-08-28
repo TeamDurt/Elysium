@@ -1,7 +1,7 @@
 package team.durt.elysium.api.animation.group;
 
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.LivingEntity;
+import team.durt.elysium.api.animation.definition.ElysiumAnimationDefinition;
 import team.durt.elysium.api.animation.state.ElysiumAnimationState;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public abstract class ElysiumAnimationGroup<T extends LivingEntity> implements S
      *
      * @return Map of animation names to definitions.
      */
-    public abstract Map<String, AnimationDefinition> getAnimations();
+    public abstract Map<String, ElysiumAnimationDefinition> getAnimations();
 
     /**
      * Retrieves an animation definition by name.
@@ -28,7 +28,7 @@ public abstract class ElysiumAnimationGroup<T extends LivingEntity> implements S
      * @param animationName Name of the animation.
      * @return The animation definition.
      */
-    public abstract Optional<AnimationDefinition> getAnimation(String animationName);
+    public abstract Optional<ElysiumAnimationDefinition> getAnimation(String animationName);
 
     /**
      * Returns states of defined animations.

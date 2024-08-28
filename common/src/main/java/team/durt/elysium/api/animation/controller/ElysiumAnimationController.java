@@ -1,8 +1,8 @@
 package team.durt.elysium.api.animation.controller;
 
-import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import team.durt.elysium.api.animation.definition.ElysiumAnimationDefinition;
 import team.durt.elysium.api.animation.group.CompatibleAnimationGroup;
 
 import java.util.List;
@@ -70,7 +70,7 @@ public abstract class ElysiumAnimationController<T extends LivingEntity> impleme
      * @param predicate The predicate for the animation.
      */
     public record WalkingAnimation<T extends LivingEntity>(
-            AnimationDefinition animationDefinition,
+            ElysiumAnimationDefinition animationDefinition,
             float maxSpeed,
             float scaleFactor,
             Predicate<T> predicate) {
